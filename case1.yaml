@@ -1,0 +1,17 @@
+---
+metadata:
+  name: "CNC Case1 - Ensure IAM Policy documents do not have statements granting any s3 actions that have a * in any of the specified resources for that statement"
+  id: case1
+  guidelines: "Ensure IAM Policy documents do not have statements granting any s3 actions that have a * in any of the specified resources for that statement"
+  category: iam
+  severity: high
+scope:
+  provider: azure 
+definition:
+  not:
+    - cond_type: attribute
+      resource_types:
+        - data.aws_iam_policy_document
+      attribute: statement.*.resources.*
+      operator: contains
+      value: "*"
