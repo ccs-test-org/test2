@@ -1,3 +1,4 @@
-cmd='checkov -f case1.tf --external-checks-dir . -c case1 --compact'
-echo "### Executing: $cmd"
-$cmd
+CASE=case$1
+CMD="checkov -f $CASE.tf --external-checks-dir . -c $CASE --compact"
+echo "### Executing: $CMD"
+$CMD
