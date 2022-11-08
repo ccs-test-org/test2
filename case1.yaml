@@ -6,12 +6,20 @@ metadata:
   category: iam
   severity: high
 scope:
-  provider: azure 
+  provider: aws 
 definition:
-  not:
-    - cond_type: attribute
-      resource_types:
-        - data.aws_iam_policy_document
-      attribute: statement.*.resources.*
-      operator: contains
-      value: "*"
+  and:
+    - not:
+      - cond_type: attribute
+        resource_types:
+          - data.aws_iam_policy_document
+        attribute: statement.*.actions.*
+        operator: contains
+        value: "s3:*"
+    - not:
+      - cond_type: attribute
+        resource_types:
+          - data.aws_iam_policy_document
+        attribute: statement.*.resources.*
+        operator: contains
+        value: "*"
