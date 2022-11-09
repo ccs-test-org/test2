@@ -10,7 +10,8 @@ fi
 # Variables settings
 ID=$1
 
-CMD="checkov -f case$ID.tf --external-checks-dir . -c case$ID --compact"
+CMD="checkov -f case$ID.tf --external-checks-dir . -c case$ID"
+# CMD="checkov -f case$ID.tf --external-checks-dir . -c case$ID --compact"
 echo "### Executing: $CMD"
 
 # Checkov scan

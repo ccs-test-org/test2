@@ -8,18 +8,16 @@ metadata:
 scope:
   provider: aws 
 definition:
-  and:
-    - not:
-      - cond_type: attribute
-        resource_types:
-          - data.aws_iam_policy_document
-        attribute: statement.*.actions.*
-        operator: contains
-        value: "s3:*"
-    - not:
-      - cond_type: attribute
-        resource_types:
-          - data.aws_iam_policy_document
-        attribute: statement.*.resources.*
-        operator: contains
-        value: "*"
+  or:
+    - cond_type: attribute
+      resource_types:
+        - data.aws_iam_policy_document
+      attribute: statement[?(@.actions == "s3:Get*")].resources[*]
+      operator: jsonpath_not_contains
+      value: "*"
+    - cond_type: attribute
+      resource_types:
+        - data.aws_iam_policy_document
+      attribute: statement[?(@.actions == "s3:Get*")].resources[*]
+      operator: jsonpath_contains
+      value: "/*"

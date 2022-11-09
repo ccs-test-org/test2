@@ -9,4 +9,8 @@ scope:
   provider: aws 
 definition:
   and:
-   
+    - cond_type: attribute
+      resource_types:
+        - aws_iam_policy_document
+      attribute: resources[?(@.* != @???? )]
+      operator: jsonpath_not_exists

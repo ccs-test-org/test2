@@ -1,6 +1,5 @@
 ### 4. IAM Policy documents that grant access to resources in another account
 
-
 # Scenario 4
 ##  IAM Policy documents that grant access to resources in another account
 resource "aws_iam_role_policy" "scenario_4_pass" {

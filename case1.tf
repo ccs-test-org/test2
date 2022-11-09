@@ -69,4 +69,12 @@ data "aws_iam_policy_document" "scenario_1_pass" {
       "arn:aws:s3:::cnc-example-bucket-foo-bar/*"
     ]
   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:Get*",
+      "s3:List*"
+    ]
+    resources = ["*"]
+  }
 }
