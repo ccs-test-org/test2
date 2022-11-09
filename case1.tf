@@ -1,90 +1,72 @@
-### 1. IAM Policy documents that have statements granting any s3 actions 
-### that have a * in any of the specified resources for that statement.
+# Shared Info
+## Specify current session info
+# data "aws_caller_identity" "current" {}
 
-resource "aws_s3_bucket" "ccs_case1" {
-  bucket = "ccs_case1"
-  tags = {
-    Name        = "ccs_case1"
-    Environment = "testing"
-    Owner       = "tplisson"
-  }
+## Example role to attach role policies to
+resource "aws_iam_role" "example_role" {
+  name                 = "cnc-example"
+  assume_role_policy   = data.aws_iam_policy_document.example_trust.json
+  permissions_boundary = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/lz/power-user"
 }
-
-resource "aws_s3_bucket_acl" "ccs_case1" {
-  bucket = aws_s3_bucket.ccs_case1.id
-  acl    = "private"
-}
-
-### IAM Policy document with FAILING statements
-
-resource "aws_s3_bucket_policy" "ccs_case1_fail" {
-  bucket = aws_s3_bucket.ccs_case1.id
-  policy = data.aws_iam_policy_document.ccs_case1_fail.json
-}
-
-data "aws_iam_policy_document" "ccs_case1_fail" {
+## Trust Policy for example role
+data "aws_iam_policy_document" "example_trust" {
   statement {
-    sid = "1"
+    effect = "Allow"
     actions = [
-      "s3:ListAllMyBuckets",
-      "s3:GetBucketLocation",
+      "sts:AssumeRole",
     ]
-    resources = [
-      "arn:aws:s3:::*", ### THIS IS A FAIL
-    ]
-  }
-  statement {
-    actions = [
-      "s3:ListBucket",
-    ]
-    resources = [
-      "arn:aws:s3:::ccs_case1",
-    ]
-    condition {
-      test     = "StringLike"
-      variable = "s3:prefix"
-      values = [
-        "",
-        "home/",
-        "home/&{aws:username}/",
-      ]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
     }
   }
+}
+
+# Scenario 1 
+##  IAM Policy documents that have statements granting any s3 actions that have a * in any of the specified resources for that statement.
+resource "aws_iam_role_policy" "scenario_1_fail" {
+  name   = "scenario-1-fail"
+  role   = aws_iam_role.example_role.id
+  policy = data.aws_iam_policy_document.scenario_1_fail.json
+}
+
+data "aws_iam_policy_document" "scenario_1_fail" {
   statement {
+    effect = "Allow"
     actions = [
-      "s3:*",
+      "s3:Get*",
+      "s3:List*"
     ]
-    resources = [
-      "arn:aws:s3:::ccs_case1/home/&{aws:username}",
-      "arn:aws:s3:::ccs_case1/home/&{aws:username}/*", ### THIS IS A FAIL
+    resources = ["*"]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:Get*",
+      "s3:List*"
     ]
+    resources = ["arn:aws:s3:::cnc-*"]
   }
 }
 
-### IAM Policy document with PASSING statements
-resource "aws_s3_bucket_policy" "ccs_case1_pass" {
-  bucket = aws_s3_bucket.ccs_case1.id
-  policy = data.aws_iam_policy_document.ccs_case1_pass.json
+resource "aws_iam_role_policy" "scenario_1_pass" {
+  name   = "scenario-1-pass"
+  role   = aws_iam_role.example_role.id
+  policy = data.aws_iam_policy_document.scenario_1_pass.json
 }
 
-data "aws_iam_policy_document" "ccs_case1_pass" {
+data "aws_iam_policy_document" "scenario_1_pass" {
   statement {
-    sid = "1"
+    effect = "Allow"
+
     actions = [
-      "s3:ListBucket",
-      "s3:ListAllMyBuckets",
-      "s3:GetBucketLocation",
+      "s3:Get*",
+      "s3:List*"
     ]
+
     resources = [
-      "arn:aws:s3:::ccs_case1", ### THIS IS A PASS
-    ]
-  }
-  statement {
-    actions = [
-      "s3:*",
-    ]
-    resources = [
-      "arn:aws:s3:::ccs_case1/home/&{aws:username}", ### THIS IS A PASS
+      "arn:aws:s3:::cnc-example-bucket-foo-bar",
+      "arn:aws:s3:::cnc-example-bucket-foo-bar/*"
     ]
   }
 }

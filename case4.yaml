@@ -1,0 +1,12 @@
+---
+metadata:
+  name: "CNC Case4 - Ensure AWS IAM Policy documents does not grant access to resources in another account"
+  id: case4
+  guidelines: "Ensure AWS IAM Policy documents does not grant access to resources in another account"
+  category: iam
+  severity: high
+scope:
+  provider: aws 
+definition:
+  and:
+   

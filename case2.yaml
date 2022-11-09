@@ -1,0 +1,11 @@
+---
+metadata:
+  name: "CNC Case2 - Ensure AWS IAM Policy documents that have the action `sts:AssumeRole` granted with a resource that specifies a role ARN from another account"
+  id: case2
+  guidelines: "Ensure AWS IAM Policy documents do not have statements granting any s3 actions that have a * in any of the specified resources for that statement"
+  category: iam
+  severity: high
+scope:
+  provider: aws 
+definition:
+  and:

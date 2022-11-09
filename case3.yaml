@@ -1,0 +1,27 @@
+---
+metadata:
+  name: "CNC Case3 - Ensure AWS IAM Groups/Users/Roles have permissions boundaries attached"
+  id: case3
+  guidelines: "Ensure AWS IAM Groups/Users/Roles have permissions boundaries attached"
+  category: iam
+  severity: high
+scope:
+  provider: aws 
+definition:
+  and: 
+    - cond_type: attribute
+      resource_types:
+        - aws_iam_role
+      attribute: permissions_boundary
+      operator: exists
+    # - cond_type: connection
+    #   resource_types:
+    #     - aws_iam_role
+    #   connected_resource_types:
+    #     - data.aws_caller_identity
+    #   operator: exists
+    # - cond_type: filter
+    #   attribute: resource_type
+    #   value:
+    #     - aws_iam_role
+    #   operator: within
