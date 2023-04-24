@@ -7,6 +7,9 @@ resource "aws_iam_role" "example_role" {
   name                 = "cnc-example"
   assume_role_policy   = data.aws_iam_policy_document.example_trust.json
   permissions_boundary = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/lz/power-user"
+  tags = {
+    yor_trace = "06d3a433-ce59-4fd5-a3e7-5c6d02836e50"
+  }
 }
 ## Trust Policy for example role
 data "aws_iam_policy_document" "example_trust" {
